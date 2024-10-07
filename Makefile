@@ -2,7 +2,7 @@
 DC_DEBUG_PRINT := 0
 
 all:
-	clang -std=c99 -Wall -pedantic -Werror -D DC_DEBUG_PRINT='${DC_DEBUG_PRINT}' *.c -o main.c
+	clang-3.5 -std=c99 -Wall -pedantic -Werror -D DC_DEBUG_PRINT='${DC_DEBUG_PRINT}' *.c -o main.o
 
 run: all
 	./main.c
