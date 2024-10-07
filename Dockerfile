@@ -1,12 +1,12 @@
-FROM --platform=arm64 ubuntu:trusty-14.04
+FROM ubuntu:14.04
 
 LABEL name="ds"
-LABEL lab.number ="1"
+LABEL lab.number="1"
 
-RUN "apt" "-y update"
-RUN "apt" "-y --allow-unauthenticated install clang \
-make \ clang-tidy"
+RUN apt-get update
+RUN apt-get -y --allow-unauthenticated install clang-3.5 \
+make
 
-RUN "mkdir" "/app"
+RUN mkdir /app
 WORKDIR /app
 COPY ./ /app
