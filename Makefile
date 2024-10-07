@@ -1,5 +1,5 @@
 all:
-	clang-3.5 -std=c99 -Wall -pedantic -Werror  *.c -o main.c
+	clang-3.5 -std=c99 -Wall -pedantic -Werror  *.c -o main.o
 
 run: all
 	./main.c
@@ -7,4 +7,3 @@ run: all
 clean:
 	rm -f main.c
 	rm -f *.log
-	rm -rf cmake-build-debug/
