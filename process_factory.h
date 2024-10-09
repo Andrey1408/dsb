@@ -2,11 +2,15 @@
 #include "pipe_util.h"
 #include <stdint.h>
 
-typedef struct Process* ProcessPtr;
+typedef struct Process *ProcessPtr;
 
-ProcessPtr createProcess(const int8_t* id, const PipelinePtr pipeline);
+ProcessPtr createProcess(const local_id *id, const PipelinePtr pipeline);
 
+/* TODO: тут сделать процедуру для дочерних процессов */
+void startDefaultProcedure(ProcessPtr process);
 
-void startDefaultProcedure();
+PipelinePtr getPipeline(ProcessPtr process);
+
+local_id getSelfId(ProcessPtr process);
 
 void destroyProcess(ProcessPtr process);
