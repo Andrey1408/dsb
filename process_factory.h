@@ -1,3 +1,6 @@
+#ifndef _PROCESS_FACTORY_C
+#define _PROCESS_FACTORY_C
+
 #include "ipc.h"
 #include "pipe_util.h"
 #include <stdint.h>
@@ -14,3 +17,5 @@ PipelinePtr getPipeline(ProcessPtr process);
 local_id getSelfId(ProcessPtr process);
 
 void destroyProcess(ProcessPtr process);
+
+#endif

@@ -5,7 +5,7 @@
 #include <sys/wait.h>
 
 void parentProcedure() {
-};
+}
 
 int main(int argc, char** argv)
 {
