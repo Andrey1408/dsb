@@ -11,8 +11,7 @@ struct Pipeline
 {
     // кол-во пайпов[2]
     int *size;
-    int *reader;
-    int *writer;
+    int ***recepients;
 };
 PipelinePtr createPipeline(int pipe_num);
 

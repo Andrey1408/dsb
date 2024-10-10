@@ -6,24 +6,36 @@ PipelinePtr createPipeline(int pipe_num)
     PipelinePtr pipeline = (PipelinePtr)malloc(sizeof(struct Pipeline));
     pipeline->size = (int *)malloc(sizeof(int));
     *pipeline->size = pipe_num / 2;
-    pipeline->reader = (int *)calloc(pipe_num / 2, sizeof(int[2]));
-    pipeline->writer = (int *)calloc(pipe_num / 2, sizeof(int[2]));
-    for (int i = 0; i < *pipeline->size; i++)
+    pipeline->recepients = (int ***)malloc(sizeof(int **) * 2);
+    pipeline->recepients[0] = (int **)malloc(sizeof(int *) * pipe_num / 2);
+    pipeline->recepients[1] = (int **)malloc(sizeof(int *) * pipe_num / 2);
+    for (int i = 0; i < pipe_num / 2; i++)
     {
-       
-        pipe(&pipeline->reader[i]);
-        pipe(&pipeline->writer[i]);
+        pipeline->recepients[0][i] = (int *)calloc(2, sizeof(int));
+        pipeline->recepients[1][i] = (int *)calloc(2, sizeof(int));
+    }
+    for (int i = 0; i < pipe_num / 2; i++)
+    {
+        pipe(pipeline->recepients[0][i]);
+        pipe(pipeline->recepients[1][i]);
     }
     return pipeline;
 }
 
 void destroyPipeline(PipelinePtr pipeline)
 {
-    for (int i = 0; i < *pipeline->size * 2; i++)
+    for (int i = 0; i < *pipeline->size; i++)
     {
-        free(&pipeline->reader[i]);
-        free(&pipeline->writer[i]);
+        for (int j = 0; j < 2; j++)
+        {
+            free(pipeline->recepients[0][i] + j);
+            free(pipeline->recepients[1][i] + j);
+        }
+        free(pipeline->recepients[0] + i);
+        free(pipeline->recepients[1] + i);
     }
+    free(pipeline->recepients + 1);
+    free(pipeline->recepients);
     free(pipeline->size);
     free(pipeline);
 }
@@ -32,16 +44,16 @@ int *getWriterById(local_id id, PipelinePtr pipeline)
 {
     if (id > *pipeline->size || id < 0)
     {
-       //err
+        // err
     }
-    return &pipeline->writer[id];
+    return pipeline->recepients[1][id];
 }
 
 int *getReaderById(local_id id, PipelinePtr pipeline)
 {
     if (id > *pipeline->size || id < 0)
     {
-       //err 
+        // err
     }
-    return &pipeline->reader[id];
+    return pipeline->recepients[0][id];
 }
