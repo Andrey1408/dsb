@@ -7,11 +7,11 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-    if (argc != 2 || argv[1][1] != 'p' || (int)argv[2] > 0)
+    if (argc < 3 || argv[1][1] != 'p' || (int)argv[2] <= 0)
     {
+        printf("illegal arguments \n");
         return 1;
     }
     int N = 1 + (int)argv[2];
@@ -40,7 +40,8 @@ int main(int argc, char** argv)
     }
     /*child тут стартануть процедуру для дочерок*/
     if (p == 0)
-    {   
+    {
+        printf("in child %d", (int)p);
         id++;
         ProcessPtr current_child_process = createProcess(&id, pipeline);
         startDefaultProcedure(current_child_process, events_log_file);
@@ -50,17 +51,19 @@ int main(int argc, char** argv)
     }
     /*процедура родительского процесса*/
     if (p > 0)
-    {   
+    {
+        printf("in parent");
         ProcessPtr parent_process = createProcess(&id, pipeline);
         parentProcedure(parent_process);
         destroyProcess(parent_process);
+        for (int i = 0; i < N - 1; i++)
+        {
+            printf("waiting in parent %d", i);
+            wait(NULL);
+        }
+        destroyPipeline(pipeline);
+        return 0;
     }
 
-    for (int i = 0; i < N - 1; i++)
-    {
-        wait(NULL);
-    }
-
-    destroyPipeline(pipeline);
     return 0;
 }

@@ -10,3 +10,4 @@ make
 RUN mkdir /app
 WORKDIR /app
 COPY ./ /app
+RUN make all
