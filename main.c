@@ -9,12 +9,13 @@
 
 int main(int argc, char **argv)
 {
-    if (argc < 3 || argv[1][1] != 'p' || (int)argv[2] <= 0)
+    if (argc < 3 || argv[1][1] != 'p' || atoi(argv[2]) <= 0)
     {
         printf("illegal arguments \n");
         return 1;
     }
-    int N = 1 + (int)argv[2];
+    int N = 1 + atoi(argv[2]);
+    printf("N = %d\n", N);
     int pipe_num = N * (N - 1);
     local_id id = 0;
 
@@ -24,6 +25,7 @@ int main(int argc, char **argv)
     PipelinePtr pipeline = createPipeline(pipe_num);
     fclose(pipes_log_file);
     pid_t p = fork();
+    printf("forked\n");
     if (p > 0)
     {
         for (int i = 0; i < N - 1; i++)
@@ -41,7 +43,7 @@ int main(int argc, char **argv)
     /*child тут стартануть процедуру для дочерок*/
     if (p == 0)
     {
-        printf("in child %d", (int)p);
+        printf("in child %d\n", (int)p);
         id++;
         ProcessPtr current_child_process = createProcess(&id, pipeline);
         startDefaultProcedure(current_child_process, events_log_file);
