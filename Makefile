@@ -1,5 +1,5 @@
 all:
-	clang-3.5 -std=c99 -Wall -pedantic -Werror  *.c -o main.o
+	clang-3.5 -std=c99 -Wall -pedantic -Werror  *.c -o main
 
 run: all
 	./main.c

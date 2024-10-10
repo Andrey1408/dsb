@@ -1,8 +1,8 @@
 #include "process_factory.h"
 
-Message* create_message(MessageType type)
+Message *create_message(MessageType type)
 {
-    Message* msg = (Message*) malloc(sizeof(Message)); 
+    Message *msg = (Message *)malloc(sizeof(Message));
 
     msg->s_header.s_magic = MESSAGE_MAGIC;
     msg->s_header.s_payload_len = (uint16_t)0;
@@ -16,6 +16,7 @@ Message* create_message(MessageType type)
 
 ProcessPtr createProcess(const local_id *id, const PipelinePtr pipeline)
 {
+    printf("created process %d \n", *id);
     ProcessPtr process = malloc(sizeof(struct Process));
     if (process)
     {
@@ -25,22 +26,29 @@ ProcessPtr createProcess(const local_id *id, const PipelinePtr pipeline)
     return process;
 }
 
-void startDefaultProcedure(ProcessPtr process, FILE* events_log_file)
+void startDefaultProcedure(ProcessPtr process, FILE *events_log_file)
 {
-
     send_multicast(process, create_message(STARTED));
     log_started(events_log_file, process->id);
     Message *message_bin = NULL;
-    for (int i = 0; i < *process->pipeline->size; i++)
+    for (int i = 1; i < *process->pipeline->size; i++)
     {
+        if (i == (int) process->id)
+        {
+            continue;
+        }
         receive(process, (local_id)i, message_bin);
     }
     log_received_all_started(events_log_file, process->id);
     log_done(events_log_file, process->id);
-    
+
     send_multicast(process, create_message(DONE));
-    for (int i = 0; i < *process->pipeline->size; i++)
+    for (int i = 1; i < *process->pipeline->size; i++)
     {
+        if (i == (int) process->id)
+        {
+            continue;
+        }
         receive(process, (local_id)i, message_bin);
     }
     log_received_all_done(events_log_file, process->id);
@@ -53,10 +61,12 @@ void parentProcedure(ProcessPtr process)
     {
         receive(process, (local_id)i, message_bin);
     }
+    printf("parent received START\n");
     for (int i = 1; i < *process->pipeline->size; i++)
     {
         receive(process, (local_id)i, message_bin);
     }
+    printf("parent received DONE\n");
 }
 
 PipelinePtr getPipeline(ProcessPtr process)

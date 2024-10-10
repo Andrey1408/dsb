@@ -23,14 +23,16 @@ PipelinePtr createPipeline(int pipe_num)
 }
 
 void destroyPipeline(PipelinePtr pipeline)
-{
+{;
+    printf("in destroyPipeline\n");
     for (int i = 0; i < *pipeline->size; i++)
     {
-        for (int j = 0; j < 2; j++)
+   /*     for (int j = 0; j < 2; j++)
         {
             free(pipeline->recepients[0][i] + j);
             free(pipeline->recepients[1][i] + j);
         }
+        */
         free(pipeline->recepients[0] + i);
         free(pipeline->recepients[1] + i);
     }

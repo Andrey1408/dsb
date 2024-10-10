@@ -16,7 +16,7 @@ int main(int argc, char **argv)
     }
     int N = 1 + atoi(argv[2]);
     printf("N = %d\n", N);
-    int pipe_num = N * (N - 1);
+    int pipe_num = N * N;
     local_id id = 0;
 
     FILE *pipes_log_file = fopen(pipes_log, "w+t");
@@ -28,7 +28,7 @@ int main(int argc, char **argv)
     printf("forked\n");
     if (p > 0)
     {
-        for (int i = 0; i < N - 1; i++)
+        for (int i = 0; i < N - 2; i++)
         {
             if (p > 0)
             {
@@ -54,13 +54,14 @@ int main(int argc, char **argv)
     /*процедура родительского процесса*/
     if (p > 0)
     {
-        printf("in parent");
-        ProcessPtr parent_process = createProcess(&id, pipeline);
+        local_id id_p = (local_id) 0;
+        printf("in parent\n");
+        ProcessPtr parent_process = createProcess(&id_p, pipeline);
         parentProcedure(parent_process);
         destroyProcess(parent_process);
         for (int i = 0; i < N - 1; i++)
         {
-            printf("waiting in parent %d", i);
+            printf("waiting in parent %d \n", i);
             wait(NULL);
         }
         destroyPipeline(pipeline);
