@@ -5,6 +5,7 @@
 #include "common.h"
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/mman.h>
 #include <sys/wait.h>
 
 int main(int argc, char **argv)
@@ -16,13 +17,12 @@ int main(int argc, char **argv)
     }
     int N = 1 + atoi(argv[2]);
     printf("N = %d\n", N);
-    int pipe_num = N * N;
-    local_id id = 0;
+    local_id id = 1;
 
     FILE *pipes_log_file = fopen(pipes_log, "w+t");
     FILE *events_log_file = fopen(events_log, "w+t");
-
-    PipelinePtr pipeline = createPipeline(pipe_num);
+    PipelinePtr pipeline = (PipelinePtr) mmap(NULL, sizeof(PipelinePtr), PROT_READ | PROT_WRITE, MAP_SHARED, -1, 0);
+    pipeline = createPipeline(N);
     fclose(pipes_log_file);
     pid_t p = fork();
     printf("forked\n");
@@ -32,6 +32,7 @@ int main(int argc, char **argv)
         {
             if (p > 0)
             {
+                id++;
                 p = fork();
             }
             else
@@ -40,22 +41,10 @@ int main(int argc, char **argv)
             }
         }
     }
-    /*child тут стартануть процедуру для дочерок*/
-    if (p == 0)
-    {
-        printf("in child %d\n", (int)p);
-        id++;
-        ProcessPtr current_child_process = createProcess(&id, pipeline);
-        startDefaultProcedure(current_child_process, events_log_file);
-        destroyProcess(current_child_process);
-        fclose(events_log_file);
-        exit(EXIT_SUCCESS);
-    }
-    /*процедура родительского процесса*/
     if (p > 0)
     {
-        local_id id_p = (local_id) 0;
         printf("in parent\n");
+        local_id id_p = (local_id) 0;
         ProcessPtr parent_process = createProcess(&id_p, pipeline);
         parentProcedure(parent_process);
         destroyProcess(parent_process);
@@ -66,6 +55,15 @@ int main(int argc, char **argv)
         }
         destroyPipeline(pipeline);
         return 0;
+    }
+    if (p == 0)
+    {
+        printf("in child %d\n", (int)p);
+        ProcessPtr current_child_process = createProcess(&id, pipeline);
+        startDefaultProcedure(current_child_process, events_log_file);
+        destroyProcess(current_child_process);
+        fclose(events_log_file);
+        exit(EXIT_SUCCESS);
     }
 
     return 0;

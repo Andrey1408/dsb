@@ -30,13 +30,9 @@ void startDefaultProcedure(ProcessPtr process, FILE *events_log_file)
 {
     send_multicast(process, create_message(STARTED));
     log_started(events_log_file, process->id);
-    Message *message_bin = NULL;
+    Message *message_bin = (Message*) malloc(sizeof(Message));
     for (int i = 1; i < *process->pipeline->size; i++)
     {
-        if (i == (int) process->id)
-        {
-            continue;
-        }
         receive(process, (local_id)i, message_bin);
     }
     log_received_all_started(events_log_file, process->id);
@@ -45,20 +41,18 @@ void startDefaultProcedure(ProcessPtr process, FILE *events_log_file)
     send_multicast(process, create_message(DONE));
     for (int i = 1; i < *process->pipeline->size; i++)
     {
-        if (i == (int) process->id)
-        {
-            continue;
-        }
         receive(process, (local_id)i, message_bin);
     }
     log_received_all_done(events_log_file, process->id);
+    free(message_bin);
 }
 
 void parentProcedure(ProcessPtr process)
 {
-    Message *message_bin = NULL;
+    Message *message_bin = (Message*) malloc(sizeof(Message));
     for (int i = 1; i < *process->pipeline->size; i++)
     {
+        printf("PARENT READING FROM %d\n", i);
         receive(process, (local_id)i, message_bin);
     }
     printf("parent received START\n");
@@ -67,6 +61,7 @@ void parentProcedure(ProcessPtr process)
         receive(process, (local_id)i, message_bin);
     }
     printf("parent received DONE\n");
+    free(message_bin);
 }
 
 PipelinePtr getPipeline(ProcessPtr process)

@@ -15,8 +15,8 @@ struct Pipeline
 };
 PipelinePtr createPipeline(int pipe_num);
 
-int *getWriterById(local_id id, PipelinePtr pipeline);
-int *getReaderById(local_id id, PipelinePtr pipeline);
+int getWriterById(local_id self_id, local_id dest, PipelinePtr pipeline);
+int getReaderById(local_id self_id, local_id dest, PipelinePtr pipeline);
 
 void destroyPipeline(PipelinePtr pipeline);
 
