@@ -45,6 +45,7 @@ int main(int argc, char** argv)
         ProcessPtr current_child_process = createProcess(&id, pipeline);
         startDefaultProcedure(current_child_process, events_log_file);
         destroyProcess(current_child_process);
+        close(events_log_file);
         exit(EXIT_SUCCESS);
     }
     /*процедура родительского процесса*/
