@@ -10,8 +10,8 @@ PipelinePtr createPipeline(int pipe_num)
     pipeline->writer = (int *)calloc(pipe_num / 2, sizeof(int[2]));
     for (int i = 0; i < *pipeline->size; i++)
     {
-        pipe(pipeline->reader[i]);
-        pipe(pipeline->writer[i]);
+        pipe(&pipeline->reader[i]);
+        pipe(&pipeline->writer[i]);
     }
     return pipeline;
 }
@@ -27,20 +27,20 @@ void destroyPipeline(PipelinePtr pipeline)
     free(pipeline);
 }
 
-int *getWriterById(local_id id, local_id to, PipelinePtr pipeline)
+int *getWriterById(local_id id, PipelinePtr pipeline)
 {
     if (id > *pipeline->size || id < 0)
     {
-       return -1;
+       //err
     }
-    return &pipeline->writer[id][to];
+    return &pipeline->writer[id];
 }
 
-int *getReaderById(local_id id, local_id to, PipelinePtr pipeline)
+int *getReaderById(local_id id, PipelinePtr pipeline)
 {
     if (id > *pipeline->size || id < 0)
     {
-        return -1;
+       //err 
     }
-    return &pipeline->reader[id][to];
+    return &pipeline->reader[id];
 }

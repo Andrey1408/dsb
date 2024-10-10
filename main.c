@@ -10,7 +10,7 @@
 
 int main(int argc, char** argv)
 {
-    if (argc != 2 || argv[1] != "-p" || (int)argv[2] > 0)
+    if (argc != 2 || argv[1][1] != 'p' || (int)argv[2] > 0)
     {
         return 1;
     }

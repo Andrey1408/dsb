@@ -5,6 +5,7 @@
 #include "pipe_util.h"
 #include "pa1log.h"
 #include <stdint.h>
+#include <string.h>
 
 typedef struct Process *ProcessPtr;
 
