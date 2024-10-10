@@ -31,7 +31,7 @@ int *getWriterById(local_id id, local_id to, PipelinePtr pipeline)
 {
     if (id > *pipeline->size || id < 0)
     {
-        //error
+       return -1;
     }
     return &pipeline->writer[id][to];
 }
@@ -40,7 +40,7 @@ int *getReaderById(local_id id, local_id to, PipelinePtr pipeline)
 {
     if (id > *pipeline->size || id < 0)
     {
-        //error
+        return -1;
     }
     return &pipeline->reader[id][to];
 }

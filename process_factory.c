@@ -1,10 +1,6 @@
 #include "process_factory.h"
 
-struct Process
-{
-    local_id id;
-    PipelinePtr pipeline;
-};
+
 
 ProcessPtr createProcess(const local_id *id, const PipelinePtr pipeline)
 {
@@ -15,6 +11,11 @@ ProcessPtr createProcess(const local_id *id, const PipelinePtr pipeline)
         process->pipeline = pipeline;
     }
     return process;
+}
+
+void parentProcessInit(ProcessPtr process, int proc_count) {
+    process->id = PARENT_ID;
+    process->pipeline->size = proc_count;
 }
 
 PipelinePtr getPipeline(ProcessPtr process)

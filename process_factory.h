@@ -7,7 +7,15 @@
 
 typedef struct Process *ProcessPtr;
 
+struct Process
+{
+    local_id id;
+    PipelinePtr pipeline;
+};
+
 ProcessPtr createProcess(const local_id *id, const PipelinePtr pipeline);
+
+void parentProcessInit(ProcessPtr process, int proc_count);
 
 /* TODO: тут сделать процедуру для дочерних процессов */
 void startDefaultProcedure(ProcessPtr process);

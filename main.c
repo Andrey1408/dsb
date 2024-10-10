@@ -4,7 +4,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-void parentProcedure() {
+void parentProcedure(ProcessPtr proc) {
+
 }
 
 int main(int argc, char** argv)
