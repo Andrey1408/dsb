@@ -22,7 +22,7 @@ int main(int argc, char** argv)
     FILE *events_log_file = fopen(events_log, "w+t");
 
     PipelinePtr pipeline = createPipeline(pipe_num);
-    close(events_log_file);
+    close(pipes_log_file);
     pid_t p = fork();
     if (p > 0)
     {
@@ -43,7 +43,7 @@ int main(int argc, char** argv)
     {   
         id++;
         ProcessPtr current_child_process = createProcess(&id, pipeline);
-        startDefaultProcedure(current_child_process);
+        startDefaultProcedure(current_child_process, events_log_file);
         destroyProcess(current_child_process);
         exit(EXIT_SUCCESS);
     }

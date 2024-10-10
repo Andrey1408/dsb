@@ -1,5 +1,5 @@
 #include "pipe_util.h"
-
+#include "pa1log.h"
 
 PipelinePtr createPipeline(int pipe_num)
 {
@@ -10,6 +10,7 @@ PipelinePtr createPipeline(int pipe_num)
     pipeline->writer = (int *)calloc(pipe_num / 2, sizeof(int[2]));
     for (int i = 0; i < *pipeline->size; i++)
     {
+       
         pipe(&pipeline->reader[i]);
         pipe(&pipeline->writer[i]);
     }

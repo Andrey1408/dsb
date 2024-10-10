@@ -25,20 +25,25 @@ ProcessPtr createProcess(const local_id *id, const PipelinePtr pipeline)
     return process;
 }
 
-void startDefaultProcedure(ProcessPtr process)
+void startDefaultProcedure(ProcessPtr process, FILE* events_log_file)
 {
+
     send_multicast(process, create_message(STARTED));
+    log_started(events_log_file, process->id);
     Message *message_bin = NULL;
     for (int i = 0; i < *process->pipeline->size; i++)
     {
         receive(process, (local_id)i, message_bin);
     }
-    Message msg = create_message(DONE);
-    send_multicast(process, &msg);
+    log_received_all_started(events_log_file, process->id);
+    log_done(events_log_file, process->id);
+    
+    send_multicast(process, create_message(DONE));
     for (int i = 0; i < *process->pipeline->size; i++)
     {
         receive(process, (local_id)i, message_bin);
     }
+    log_received_all_done(events_log_file, process->id);
 }
 
 void parentProcedure(ProcessPtr process)

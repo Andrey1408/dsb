@@ -20,7 +20,7 @@ ProcessPtr createProcess(const local_id *id, const PipelinePtr pipeline);
 void parentProcessInit(ProcessPtr process, int proc_count);
 
 /* TODO: тут сделать процедуру для дочерних процессов */
-void startDefaultProcedure(ProcessPtr process);
+void startDefaultProcedure(ProcessPtr process, FILE* events_log_file);
 
 void parentProcedure(ProcessPtr process);
 
