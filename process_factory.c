@@ -34,13 +34,15 @@ void parentProcessInit(ProcessPtr process, int proc_count)
 
 void startDefaultProcedure(ProcessPtr process)
 {
-    send_multicast(process, create_message(STARTED));
+    Message msg = create_message(STARTED);
+    send_multicast(process, &msg);
     Message *message_bin;
     for (int i = 0; i < *process->pipeline->size; i++)
     {
         receive(process, (local_id)i, message_bin);
     }
-    send_multicast(process, create_message(DONE));
+    Message msg = create_message(DONE);
+    send_multicast(process, &msg);
     for (int i = 0; i < *process->pipeline->size; i++)
     {
         receive(process, (local_id)i, message_bin);

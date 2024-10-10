@@ -1,6 +1,8 @@
 #include "pipe_util.h"
 #include "process_factory.h"
 #include "ipc.h"
+#include "pa1log.h"
+#include "common.h"
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -15,7 +17,12 @@ int main(int argc, char** argv)
     int N = 1 + (int)argv[2];
     int pipe_num = N * (N - 1);
     local_id id = 0;
+
+    FILE *pipes_log_file = fopen(pipes_log, "w+t");
+    FILE *events_log_file = fopen(events_log, "w+t");
+
     PipelinePtr pipeline = createPipeline(pipe_num);
+    close(events_log_file);
     pid_t p = fork();
     if (p > 0)
     {
@@ -34,8 +41,8 @@ int main(int argc, char** argv)
     /*child тут стартануть процедуру для дочерок*/
     if (p == 0)
     {   
-        local_id++;
-        ProcessPtr current_child_process = createProcess(&local_id, pipeline);
+        id++;
+        ProcessPtr current_child_process = createProcess(&id, pipeline);
         startDefaultProcedure(current_child_process);
         destroyProcess(current_child_process);
         exit(EXIT_SUCCESS);
@@ -43,7 +50,7 @@ int main(int argc, char** argv)
     /*процедура родительского процесса*/
     if (p > 0)
     {   
-        ProcessPtr parent_process = createProcess(&local_id, pipeline);
+        ProcessPtr parent_process = createProcess(&id, pipeline);
         parentProcedure(parent_process);
         destroyProcess(parent_process);
     }
