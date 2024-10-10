@@ -1,12 +1,5 @@
 #include "pipe_util.h"
 
-struct Pipeline
-{
-    // кол-во пайпов[2]
-    int *size;
-    int *reader;
-    int *writer;
-};
 
 PipelinePtr createPipeline(int pipe_num)
 {
@@ -34,20 +27,20 @@ void destroyPipeline(PipelinePtr pipeline)
     free(pipeline);
 }
 
-int *getWriterById(int id, PipelinePtr pipeline)
+int *getWriterById(local_id id, local_id to, PipelinePtr pipeline)
 {
     if (id > *pipeline->size || id < 0)
     {
         //error
     }
-    return &pipeline->writer[id*2];
+    return &pipeline->writer[id][to];
 }
 
-int *getReaderById(int id, PipelinePtr pipeline)
+int *getReaderById(local_id id, local_id to, PipelinePtr pipeline)
 {
     if (id > *pipeline->size || id < 0)
     {
         //error
     }
-    return &pipeline->reader[id*2];
+    return &pipeline->reader[id][to];
 }

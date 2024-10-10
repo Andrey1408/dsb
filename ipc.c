@@ -1,10 +1,11 @@
 #include "ipc.h"
 #include "pipe_util.h"
+#include "process_factory.h"
 
 int send(void * self, local_id dst, const Message * msg) {
-    Process *proc = self;
-    pipe_str pp = proc->pipe[proc->cur_id][dst];
-    if (write(pp.writer, msg, sizeof(Message)) < 0) {
+    ProcessPtr process = (ProcessPtr)self;
+    PipelinePtr pipeline = getPipeline(process);
+    if (write(getWriterById(getSelfId(process), dst, pipeline), msg, sizeof(Message)) < 0) {
         return 1;
     }
     if (msg->s_header.s_magic != MESSAGE_MAGIC)
@@ -15,8 +16,9 @@ int send(void * self, local_id dst, const Message * msg) {
 }
 
 int send_multicast(void * self, const Message * msg) {
-    Process *proc = self;
-    for (local_id i = 0; i < proc->count_p; i++) {
+   ProcessPtr process = (ProcessPtr)self;
+   PipelinePtr pipeline = getPipeline(process);
+    for (local_id i = 0; i < pipeline->size; i++) {
         if (send(self, i, msg)) {
             return 1;
         }
@@ -25,9 +27,9 @@ int send_multicast(void * self, const Message * msg) {
 }
 
 int receive(void * self, local_id from, Message * msg) {
-    Process *proc = self;
-    pipe_str pp = proc->pipe[from][proc->cur_id];
-    if (read(pp.reader, msg, sizeof(Message)) < 0)
+    ProcessPtr process = (ProcessPtr)self;
+    PipelinePtr pipeline = getPipeline(process);
+    if (read(getReaderById(from, getSelfId(process), pipeline), msg, sizeof(Message)) < 0)
     {
         return 1;
     }
