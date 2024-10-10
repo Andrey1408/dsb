@@ -3,6 +3,7 @@
 
 #include "ipc.h"
 #include "pipe_util.h"
+#include "pa1log.h"
 #include <stdint.h>
 
 typedef struct Process *ProcessPtr;
@@ -19,6 +20,8 @@ void parentProcessInit(ProcessPtr process, int proc_count);
 
 /* TODO: тут сделать процедуру для дочерних процессов */
 void startDefaultProcedure(ProcessPtr process);
+
+void parentProcedure(ProcessPtr process);
 
 PipelinePtr getPipeline(ProcessPtr process);
 
